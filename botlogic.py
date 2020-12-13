@@ -4,15 +4,11 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from time import sleep
-from enum import Enum, auto
+
 from webdriver_manager.chrome import ChromeDriverManager
 
+import states
 from login import Login
-
-
-class State(Enum):
-    STARTED = auto()
-    STOPPED = auto()
 
 
 class BotLogic(threading.Thread):
@@ -20,7 +16,7 @@ class BotLogic(threading.Thread):
 
     def __init__(self, threadID, name, counter, gui):
         if BotLogic._instance is None:
-            self.state = State.STOPPED
+            self.state = states.State.STOPPED
             threading.Thread.__init__(self)
             self.threadID = threadID
             self.name = name
@@ -48,11 +44,13 @@ class BotLogic(threading.Thread):
     def run_bot(self):
         while True:
             sleep(1)
-            if self.state == State.STARTED:
+            if self.state == states.State.STARTED:
                 self.gui.log("Bot started")
-                # browser = webdriver.Chrome(ChromeDriverManager().install())
-                # browser.get('https://www.instagram.com/')
-                #
-                # login = Login(browser)
-                # login.login("", "")
-                sleep(10)
+                browser = webdriver.Chrome(ChromeDriverManager().install())
+                browser.get('https://www.instagram.com/')
+
+                login = Login(browser, self.gui, self)
+                login.login("", "")
+            if self.state == states.State.STOPPED:
+                self.gui.btn_go_text.set("Start")
+

@@ -1,7 +1,8 @@
 import tkinter as tk
 from datetime import datetime
 
-from botlogic import BotLogic, State
+import states
+from botlogic import BotLogic
 
 
 class App:
@@ -51,12 +52,12 @@ class App:
         if current_state == "Start":
             self.btn_go_text.set("Stop")
             instance = BotLogic.get_instance(self)
-            instance.set_state(State.STARTED)
+            instance.set_state(states.State.STARTED)
             instance.start()
         else:
             self.btn_go_text.set("Stopping...")
             instance = BotLogic.get_instance(self)
-            instance.set_state(State.STOPPED)
+            instance.set_state(states.State.STOPPED)
             self.btn_go_text.set("Start")
 
 
